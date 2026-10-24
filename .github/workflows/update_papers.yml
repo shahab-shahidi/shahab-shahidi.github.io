@@ -1,26 +1,66 @@
-name: Update Papers JSON
+name: Update Papers from arXiv
 
 on:
   schedule:
-    - cron: '0 0 * * 0' # هر هفته یکبار
-  workflow_dispatch:
+    - cron: '0 0 * * 0' # هر هفته یکبار (یکشنبه‌ها)
+  workflow_dispatch: # امکان اجرا با یک کلیک دستی در گیت‌هاب
 
 jobs:
-  update:
+  update-papers:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Fetch latest papers from INSPIRE-HEP
-        run: |
-          curl -s "https://inspirehep.net/api/literature?sort=mostrecent&size=2&q=ea:1066053" -o inspire_raw.json
-          # اینجا می‌توانید پایتون اسکریپت برای تبدیل JSON اینسپایر به فرمت دلخواه قرار دهید
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-      - name: Commit and push if changed
+      - name: Fetch latest papers from arXiv and generate papers.json
+        run: |
+          python3 -c '
+          import urllib.request
+          import xml.etree.ElementTree as ET
+          import json
+
+          # جستجوی دقیق مقالات Shahab Shahidi در arXiv API
+          url = "http://export.arxiv.org/api/query?search_query=au:Shahab_Shahidi&sortBy=submittedDate&sortOrder=descending&max_results=2"
+          
+          try:
+              req = urllib.request.urlopen(url)
+              xml_data = req.read()
+              
+              root = ET.fromstring(xml_data)
+              ns = {"atom": "http://www.w3.org/2005/Atom"}
+              
+              papers = []
+              for entry in root.findall("atom:entry", ns):
+                  title = entry.find("atom:title", ns).text.strip().replace("\n", " ")
+                  published = entry.find("atom:published", ns).text[:4] # سال انتشار
+                  id_url = entry.find("atom:id", ns).text.strip()
+                  
+                  authors = [author.find("atom:name", ns).text for author in entry.findall("atom:author", ns)]
+                  authors_str = ", ".join(authors)
+                  
+                  papers.append({
+                      "title": title,
+                      "authors": authors_str,
+                      "journal": "arXiv Preprint",
+                      "year": published,
+                      "url": id_url
+                  })
+              
+              with open("papers.json", "w", encoding="utf-8") as f:
+                  json.dump(papers, f, ensure_ascii=False, indent=2)
+              print("Successfully updated papers.json with:", len(papers), "papers.")
+          except Exception as e:
+              print("Error fetching from arXiv:", e)
+              exit(1)
+          '
+
+      - name: Commit and push if papers.json changed
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git add papers.json
-          git commit -m "Auto-update latest papers" || exit 0
-          git push
+          git diff --quiet papers.json || (git add papers.json && git commit -m "Auto-update latest papers from arXiv" && git push)
