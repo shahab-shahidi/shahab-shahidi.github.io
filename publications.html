@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publications | Shahab Shahidi</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-base: #f0f7ff;
+      --card-bg: #ffffff;
+      --card-alt: #f8fbff;
+      --border-subtle: #dbeafe;
+      --border-accent: #93c5fd;
+
+      --blue-primary: #0284c7;
+      --blue-dark: #0f172a;
+      --blue-soft: #e0f2fe;
+      
+      --emerald: #059669;
+      --emerald-soft: #d1fae5;
+      
+      --amber: #d97706;
+      --amber-soft: #fef3c7;
+
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      
+      --shadow-sm: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 10px 25px -3px rgba(14, 116, 144, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.7;
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(186, 230, 253, 0.45) 0%, transparent 40%),
+        radial-gradient(circle at 90% 40%, rgba(167, 243, 208, 0.35) 0%, transparent 45%);
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .nav-container {
+      max-width: 1400px;
+      width: 94%;
+      margin: 0 auto;
+      padding: 16px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--blue-dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand i { color: var(--blue-primary); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--blue-primary); }
+
+    .container {
+      max-width: 1400px;
+      width: 94%;
+      margin: 0 auto;
+      padding: 36px 0 80px 0;
+    }
+
+    /* Header Summary Card */
+    .summary-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 36px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .summary-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #0284c7, #059669, #d97706);
+    }
+    .page-title h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--blue-dark);
+      letter-spacing: -0.02em;
+    }
+
+    /* Filter & Search Bar */
+    .controls {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      padding: 10px 16px 10px 38px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      background: var(--card-alt);
+      font-size: 0.9rem;
+      width: 260px;
+      color: var(--text-main);
+      outline: none;
+      transition: border 0.2s;
+    }
+    .search-box input:focus {
+      border-color: var(--blue-primary);
+      background: #ffffff;
+    }
+    .search-box i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Publications List */
+    .pub-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .pub-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px 28px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pub-card:hover {
+      border-color: var(--blue-primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .pub-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--blue-dark);
+      line-height: 1.45;
+    }
+    .pub-title a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .pub-title a:hover {
+      color: var(--blue-primary);
+    }
+    .pub-authors {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    /* Highlight User Name */
+    .author-highlight {
+      color: var(--blue-primary);
+      font-weight: 700;
+      background: var(--blue-soft);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .pub-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      margin-top: 4px;
+      font-size: 0.85rem;
+    }
+    .pub-journal {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: #065f46;
+      background: var(--emerald-soft);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+    .pub-year {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--amber);
+    }
+    .pub-links {
+      margin-left: auto;
+      display: flex;
+      gap: 12px;
+    }
+    .pub-link-btn {
+      color: var(--blue-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.82rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #f0f7ff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.2s;
+    }
+    .pub-link-btn:hover {
+      background: var(--blue-primary);
+      color: #ffffff;
+      border-color: var(--blue-primary);
+    }
+
+    /* Loading Spinner */
+    .loader {
+      text-align: center;
+      padding: 60px 0;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+    }
+    .loader i {
+      font-size: 2.2rem;
+      color: var(--blue-primary);
+      margin-bottom: 12px;
+      animation: spin 1s linear infinite;
+      display: block;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      background: #ffffff;
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <i class="fa-solid fa-atom"></i>
+        <span>Shahab Shahidi</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="publications.html" class="active">Publications</a>
+        <a href="index.html#codes">Codes</a>
+        <a href="index.html#teaching">Teaching</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Header Card -->
+    <div class="summary-card">
+      <div class="page-title">
+        <h1>Publications</h1>
+      </div>
+      <div class="controls">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Filter by title, year, or keyword...">
+        </div>
+      </div>
+    </div>
+
+    <!-- Publications List Container -->
+    <div id="pubList" class="pub-list">
+      <div class="loader">
+        <i class="fa-solid fa-circle-notch"></i>
+        Fetching publications directly from INSPIRE-HEP...
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Shahab Shahidi &bull; Associate Professor &bull; Department of Physics, Damghan University</p>
+  </footer>
+
+  <!-- Script to Fetch and Render Publications from INSPIRE-HEP -->
+  <script>
+    const AUTHOR_RECID = "1066053";
+    const API_URL = `https://inspirehep.net/api/literature?sort=mostrecent&size=100&q=ea:1066053`;
+    let publicationsData = [];
+
+    // Check if author is Shahab Shahidi
+    function isTargetAuthor(name) {
+      if (!name) return false;
+      const lower = name.toLowerCase();
+      return (lower.includes("shahidi") && (lower.includes("shahab") || lower.startsWith("s.")));
+    }
+
+    // Format authors list with highlighted name
+    function formatAuthors(authors) {
+      if (!authors || authors.length === 0) return "Unknown Authors";
+      return authors.map(a => {
+        const rawName = a.full_name || `${a.first_name || ''} ${a.last_name || ''}`.trim();
+        if (isTargetAuthor(rawName)) {
+          return `<span class="author-highlight">Shahab Shahidi</span>`;
+        }
+        return rawName;
+      }).join(", ");
+    }
+
+    // Format journal citation info
+    function formatPublicationInfo(metadata) {
+      if (metadata.publication_info && metadata.publication_info.length > 0) {
+        const pub = metadata.publication_info[0];
+        let ref = pub.journal_title || pub.journal_record?.title || "";
+        if (pub.journal_volume) ref += ` <b>${pub.journal_volume}</b>`;
+        if (pub.page_start) ref += ` (${pub.year || ''}) ${pub.page_start}`;
+        else if (pub.artid) ref += ` (${pub.year || ''}) ${pub.artid}`;
+        else if (pub.year) ref += ` (${pub.year})`;
+        return ref;
+      }
+      if (metadata.arxiv_eprints && metadata.arxiv_eprints.length > 0) {
+        return `arXiv:${metadata.arxiv_eprints[0].value} [${metadata.arxiv_eprints[0].categories?.[0] || 'hep-th'}]`;
+      }
+      return "Preprint / In preparation";
+    }
+
+    // Render list
+    function renderPublications(items) {
+      const container = document.getElementById("pubList");
+      if (items.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">No publications found matching your filter.</div>`;
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const meta = item.metadata;
+        const title = meta.titles?.[0]?.title || "Untitled Paper";
+        const authorsHtml = formatAuthors(meta.authors);
+        const journalInfo = formatPublicationInfo(meta);
+        const year = meta.earliest_date ? meta.earliest_date.split("-")[0] : (meta.publication_info?.[0]?.year || "");
+        const recordId = item.id;
+        const inspireUrl = `https://inspirehep.net/literature/${recordId}`;
+        const doi = meta.dois?.[0]?.value;
+
+        return `
+          <div class="pub-card">
+            <div class="pub-title">
+              <a href="${inspireUrl}" target="_blank">${title}</a>
+            </div>
+            <div class="pub-authors">
+              ${authorsHtml}
+            </div>
+            <div class="pub-meta">
+              <span class="pub-journal">${journalInfo}</span>
+              ${year ? `<span class="pub-year"><i class="fa-regular fa-calendar"></i> ${year}</span>` : ''}
+              
+              <div class="pub-links">
+                ${doi ? `<a href="https://doi.org/${doi}" target="_blank" class="pub-link-btn"><i class="fa-solid fa-link"></i> DOI</a>` : ''}
+                <a href="${inspireUrl}" target="_blank" class="pub-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> INSPIRE</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // Fetch from INSPIRE-HEP
+    async function loadPublications() {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        publicationsData = data.hits?.hits || [];
+        renderPublications(publicationsData);
+      } catch (err) {
+        document.getElementById("pubList").innerHTML = `
+          <div style="text-align:center; padding:50px; color: #dc2626;">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem; margin-bottom:10px; display:block;"></i>
+            Unable to load publications automatically from INSPIRE-HEP API.<br>
+            Please visit the official <a href="https://inspirehep.net/authors/1066053" target="_blank" style="color:var(--blue-primary); text-decoration:underline;">INSPIRE Profile</a> directly.
+          </div>
+        `;
+      }
+    }
+
+    // Search / Filter event
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      const filtered = publicationsData.filter(item => {
+        const title = item.metadata.titles?.[0]?.title?.toLowerCase() || "";
+        const authors = (item.metadata.authors || []).map(a => a.full_name?.toLowerCase() || "").join(" ");
+        const year = item.metadata.earliest_date || "";
+        return title.includes(query) || authors.includes(query) || year.includes(query);
+      });
+      renderPublications(filtered);
+    });
+
+    loadPublications();
+  </script>
+</body>
+</html>
