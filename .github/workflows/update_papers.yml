@@ -2,20 +2,23 @@ name: Update Papers from arXiv
 
 on:
   schedule:
-    - cron: '0 0 * * 0' # هر هفته یکبار (یکشنبه‌ها)
-  workflow_dispatch: # امکان اجرا با یک کلیک دستی در گیت‌هاب
+    - cron: '0 0 * * *' # اجرای خودکار هر روز ساعت 00:00 به وقت UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write # مجوز لازم برای کامیت و پوش کردن خودکار فایل papers.json
 
 jobs:
   update-papers:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Fetch latest papers from arXiv and generate papers.json
         run: |
@@ -24,7 +27,6 @@ jobs:
           import xml.etree.ElementTree as ET
           import json
 
-          # جستجوی دقیق مقالات Shahab Shahidi در arXiv API
           url = "http://export.arxiv.org/api/query?search_query=au:Shahab_Shahidi&sortBy=submittedDate&sortOrder=descending&max_results=2"
           
           try:
@@ -37,7 +39,7 @@ jobs:
               papers = []
               for entry in root.findall("atom:entry", ns):
                   title = entry.find("atom:title", ns).text.strip().replace("\n", " ")
-                  published = entry.find("atom:published", ns).text[:4] # سال انتشار
+                  published = entry.find("atom:published", ns).text[:4]
                   id_url = entry.find("atom:id", ns).text.strip()
                   
                   authors = [author.find("atom:name", ns).text for author in entry.findall("atom:author", ns)]
@@ -63,4 +65,4 @@ jobs:
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git diff --quiet papers.json || (git add papers.json && git commit -m "Auto-update latest papers from arXiv" && git push)
+          git diff --quiet papers.json || (git add papers.json && git commit -m "Auto-update latest papers from arXiv (Daily)" && git push)
