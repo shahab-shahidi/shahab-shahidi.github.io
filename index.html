@@ -818,10 +818,12 @@
   </footer>
 
   <!-- Script: Fetch exactly latest 2 papers dynamically from INSPIRE-HEP -->
-  <script>
+   <script>
     async function loadLatestPublications() {
       const container = document.getElementById("latestPubList");
-      const API_URL = "https://inspirehep.net/api/literature?sort=mostrecent&size=2&q=ea:1066053";
+      const targetUrl = "https://inspirehep.net/api/literature?sort=mostrecent&size=2&q=ea:1066053";
+      // استفاده از پروکسی جهت دور زدن محدودیت CORS مرورگر
+      const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl);
 
       const isTargetAuthor = (name) => {
         if (!name) return false;
@@ -857,7 +859,15 @@
       };
 
       try {
-        const res = await fetch(API_URL);
+        let res;
+        try {
+          // تلاش اول از طریق پروکسی برای رد شدن از CORS
+          res = await fetch(proxyUrl);
+        } catch (e) {
+          // اگر پروکسی اول قطع بود، از پروکسی جایگزین استفاده کن
+          res = await fetch("https://corsproxy.io/?" + encodeURIComponent(targetUrl));
+        }
+
         const data = await res.json();
         const papers = (data.hits && data.hits.hits) ? data.hits.hits : [];
 
@@ -876,4 +886,37 @@
 
           return `
             <div class="pub-mini-card">
-              <div styl
+              <div style="font-size: 1.05rem; font-weight: 700; color: var(--blue-dark); line-height: 1.45;">
+                <a href="${inspireUrl}" target="_blank" style="color: inherit; text-decoration: none;">${title}</a>
+              </div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">
+                ${authors}
+              </div>
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 0.82rem; margin-top: 4px;">
+                <span style="font-family: 'JetBrains Mono', monospace; font-weight: 600; color: #065f46; background: var(--emerald-soft); padding: 2px 8px; border-radius: 6px;">${journal}</span>
+                ${year ? `<span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--amber);"><i class="fa-regular fa-calendar"></i> ${year}</span>` : ''}
+                <div style="margin-left: auto;">
+                  <a href="${inspireUrl}" target="_blank" style="color: var(--blue-primary); text-decoration: none; font-weight: 600; font-size: 0.82rem;"><i class="fa-solid fa-arrow-up-right-from-square"></i> INSPIRE</a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+      } catch (err) {
+        console.error("INSPIRE fetch error:", err);
+        container.innerHTML = `
+          <div style="text-align: center; color: var(--text-muted); padding: 15px;">
+            Unable to load live feed directly. Please view all articles on the 
+            <a href="publications.html" style="color: var(--blue-primary); text-decoration: underline; font-weight: 600;">Publications Page</a> or 
+            <a href="https://inspirehep.net/authors/1066053" target="_blank" style="color: var(--blue-primary); text-decoration: underline; font-weight: 600;">INSPIRE-HEP</a>.
+          </div>
+        `;
+      }
+    }
+
+    loadLatestPublications();
+  </script>
+
+</body>
+</html>
