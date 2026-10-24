@@ -3,29 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dr. Shahab Shahidi | Theoretical Physics & Cosmology</title>
+  <title>Dr. Shahab Shahidi | Associate Professor of Theoretical Physics</title>
   <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
     :root {
-      --primary: #6366f1;
-      --primary-light: #818cf8;
-      --secondary: #ec4899;
-      --accent: #0ea5e9;
-      --emerald: #10b981;
-      --amber: #f59e0b;
-      --navy: #0f172a;
-      --slate: #334155;
-      --muted: #64748b;
-      --bg-gradient: linear-gradient(135deg, #f0fdfa 0%, #f5f3ff 50%, #eff6ff 100%);
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --border-color: rgba(226, 232, 240, 0.9);
-      --shadow-soft: 0 10px 30px -5px rgba(99, 102, 241, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-      --shadow-hover: 0 20px 40px -10px rgba(99, 102, 241, 0.2);
+      --bg-primary: #0a0f1d;
+      --bg-secondary: #111827;
+      --card-bg: rgba(17, 24, 39, 0.75);
+      --border-color: rgba(55, 65, 81, 0.6);
+      --accent: #d97706; /* Warm Bronze / Gold */
+      --accent-glow: rgba(217, 119, 6, 0.15);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-bright: #ffffff;
+      --primary-blue: #3b82f6;
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     }
 
     * {
@@ -35,95 +32,61 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-gradient);
-      color: var(--slate);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
       line-height: 1.7;
-      min-height: 100vh;
       -webkit-font-smoothing: antialiased;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    /* Ambient Glow Circles */
-    .glow-bg {
-      position: absolute;
-      width: 500px;
-      height: 500px;
-      border-radius: 50%;
-      filter: blur(100px);
-      z-index: -1;
-      opacity: 0.45;
-      pointer-events: none;
-    }
-    .glow-1 {
-      top: -100px;
-      left: -100px;
-      background: radial-gradient(circle, #818cf8, #c084fc);
-    }
-    .glow-2 {
-      top: 300px;
-      right: -120px;
-      background: radial-gradient(circle, #38bdf8, #f472b6);
     }
 
     /* Navbar */
     nav {
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(16px);
+      background: rgba(10, 15, 29, 0.85);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
       z-index: 1000;
     }
     .nav-container {
-      max-width: 1080px;
+      max-width: 1150px;
       margin: 0 auto;
-      padding: 16px 24px;
+      padding: 18px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .brand {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--navy);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-bright);
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 10px;
+      letter-spacing: -0.01em;
     }
-    .brand-sparkle {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: #fff;
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+    .brand i {
+      color: var(--accent);
     }
     .nav-links {
       display: flex;
-      gap: 24px;
+      gap: 22px;
     }
     .nav-links a {
-      color: var(--muted);
+      color: var(--text-muted);
       text-decoration: none;
-      font-weight: 600;
-      font-size: 0.92rem;
-      transition: all 0.2s;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: color 0.2s;
     }
     .nav-links a:hover {
-      color: var(--primary);
-      transform: translateY(-1px);
+      color: var(--text-bright);
     }
 
     /* Container */
     .container {
-      max-width: 1080px;
+      max-width: 1150px;
       margin: 0 auto;
       padding: 48px 24px;
     }
@@ -131,24 +94,22 @@
     /* Hero Section */
     .hero {
       background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      border-radius: 28px;
-      padding: 52px;
-      margin-bottom: 48px;
-      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 48px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow);
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 48px;
+      gap: 40px;
       align-items: center;
-      position: relative;
     }
-    @media (max-width: 820px) {
+    @media (max-width: 850px) {
       .hero {
         grid-template-columns: 1fr;
-        padding: 36px 24px;
+        padding: 32px;
         text-align: center;
-        gap: 32px;
       }
       .hero-avatar-wrapper {
         margin: 0 auto;
@@ -164,62 +125,78 @@
     .hero-content {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
     }
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(236, 72, 153, 0.12));
-      color: var(--primary);
-      border: 1px solid rgba(99, 102, 241, 0.2);
-      padding: 7px 16px;
-      border-radius: 30px;
-      font-size: 0.86rem;
-      font-weight: 700;
+      background: rgba(59, 130, 246, 0.1);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
       width: fit-content;
     }
     .hero h1 {
-      font-size: 2.8rem;
-      font-weight: 900;
-      color: var(--navy);
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-    }
-    .hero-title-gradient {
-      background: linear-gradient(135deg, #4f46e5 0%, #d946ef 50%, #06b6d4 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
     }
     .hero p {
-      font-size: 1.12rem;
-      color: var(--muted);
+      font-size: 1.05rem;
+      color: var(--text-muted);
       line-height: 1.75;
     }
     
-    /* Vibrant Avatar */
+    /* Avatar Wrapper */
     .hero-avatar-wrapper {
       position: relative;
-      width: 190px;
-      height: 190px;
+      width: 180px;
+      height: 180px;
       border-radius: 50%;
-      padding: 5px;
-      background: linear-gradient(135deg, #6366f1, #ec4899, #06b6d4);
-      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.35);
+      padding: 4px;
+      background: linear-gradient(135deg, var(--accent), var(--primary-blue));
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
       flex-shrink: 0;
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .hero-avatar-wrapper:hover {
-      transform: scale(1.05) rotate(2deg);
     }
     .hero-avatar {
       width: 100%;
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      background: #ffffff;
-      border: 4px solid #ffffff;
+      background: #1f2937;
       display: block;
+    }
+
+    /* Contact Details Box */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .contact-item i {
+      color: var(--accent);
+      width: 18px;
+    }
+    .contact-item a {
+      color: var(--text-main);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-item a:hover {
+      color: var(--accent);
     }
 
     /* Buttons */
@@ -232,337 +209,369 @@
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.92rem;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
       text-decoration: none;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
     }
-    .btn-gradient {
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    .btn-accent {
+      background: var(--accent);
       color: #fff;
-      box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
     }
-    .btn-gradient:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(99, 102, 241, 0.45);
+    .btn-accent:hover {
+      background: #b45309;
+      transform: translateY(-1px);
     }
-    .btn-inspire {
-      background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
-      color: #fff;
-      box-shadow: 0 6px 18px rgba(236, 72, 153, 0.3);
-    }
-    .btn-inspire:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(236, 72, 153, 0.45);
-    }
-    .btn-white {
-      background: #ffffff;
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-color);
-      color: var(--navy);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      color: var(--text-bright);
     }
-    .btn-white:hover {
-      background: #f8fafc;
-      transform: translateY(-2px);
-      border-color: #cbd5e1;
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: #4b5563;
+      transform: translateY(-1px);
     }
 
-    /* Section Headers */
+    /* Section Header */
     .section-header {
-      margin-bottom: 28px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
     }
     .section-title {
-      font-size: 1.65rem;
-      font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .section-subtitle {
-      font-size: 0.95rem;
-      color: var(--muted);
-    }
-
-    /* Research Interests (2 Focused Cards) */
-    .interests-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-      margin-bottom: 56px;
-    }
-    .interest-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      border-radius: 22px;
-      padding: 34px;
-      box-shadow: var(--shadow-soft);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      overflow: hidden;
-    }
-    .interest-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, #6366f1, #ec4899);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    .interest-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-hover);
-    }
-    .interest-card:hover::before {
-      opacity: 1;
-    }
-    .icon-bubble {
-      width: 58px;
-      height: 58px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-    }
-    .bubble-cosmo {
-      background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
-      color: #4f46e5;
-    }
-    .bubble-gravity {
-      background: linear-gradient(135deg, #fce7f3, #fbcfe8);
-      color: #db2777;
-    }
-    .interest-card h3 {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 12px;
-    }
-    .interest-card p {
-      font-size: 0.96rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    /* Codes & Teaching */
-    .resources-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-      margin-bottom: 56px;
-    }
-    .resource-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      border-radius: 22px;
-      padding: 34px;
-      box-shadow: var(--shadow-soft);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.3s ease;
-    }
-    .resource-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-hover);
-    }
-    .resource-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.76rem;
+      font-size: 1.4rem;
       font-weight: 700;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-      width: fit-content;
-    }
-    .tag-python {
-      background: #fef3c7;
-      color: #b45309;
-    }
-    .tag-teaching {
-      background: #dcfce7;
-      color: #15803d;
-    }
-    .resource-card h3 {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 12px;
+      color: var(--text-bright);
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .resource-card p {
+    .section-title i {
+      color: var(--accent);
+    }
+
+    /* Two Column Layout for Research & Academic info */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    /* Research Interests List */
+    .interests-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .interest-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      transition: border-color 0.2s;
+    }
+    .interest-item:hover {
+      border-color: rgba(217, 119, 6, 0.4);
+    }
+    .interest-item i {
+      color: var(--accent);
+      font-size: 1.1rem;
+      margin-top: 3px;
+    }
+    .interest-item h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 3px;
+    }
+    .interest-item p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* Timeline / Academic Positions & Education */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+    .timeline-item {
+      position: relative;
+      padding-left: 24px;
+      border-left: 2px solid var(--border-color);
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 6px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .timeline-year {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .timeline-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-bright);
+    }
+    .timeline-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* Awards Box */
+    .award-card {
+      background: rgba(217, 119, 6, 0.05);
+      border: 1px solid rgba(217, 119, 6, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .award-icon {
+      font-size: 1.8rem;
+      color: var(--accent);
+    }
+    .award-info h4 {
       font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: 24px;
+      font-weight: 700;
+      color: var(--text-bright);
+    }
+    .award-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
     }
 
     /* Footer */
     footer {
       border-top: 1px solid var(--border-color);
       text-align: center;
-      padding: 36px 24px;
-      font-size: 0.88rem;
-      color: var(--muted);
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(10px);
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      background: var(--bg-secondary);
     }
   </style>
 </head>
 <body>
 
-  <!-- Glow Background Accents -->
-  <div class="glow-bg glow-1"></div>
-  <div class="glow-bg glow-2"></div>
-
   <!-- Navbar -->
   <nav>
     <div class="nav-container">
       <a href="#" class="brand">
-        <div class="brand-sparkle">
-          <i class="fa-solid fa-atom"></i>
-        </div>
+        <i class="fa-solid fa-atom"></i>
         <span>Dr. Shahab Shahidi</span>
       </a>
       <div class="nav-links">
         <a href="#about">About</a>
-        <a href="#interests">Interests</a>
-        <a href="#resources">Codes & Courses</a>
+        <a href="#research">Research</a>
+        <a href="#academic">Positions & Education</a>
+        <a href="#resources">Codes & Links</a>
       </div>
     </div>
   </nav>
 
   <div class="container">
     
-    <!-- Hero Section (Intro + Photo + Vibrant Highlights) -->
+    <!-- Hero Section -->
     <section class="hero" id="about">
       <div class="hero-content">
         <div class="hero-badge">
-          <i class="fa-solid fa-graduation-cap"></i> Department of Physics, Damghan University
+          <i class="fa-solid fa-graduation-cap"></i> Associate Professor of Theoretical Physics
         </div>
-        <h1>
-          Hello, I'm <br>
-          <span class="hero-title-gradient">Shahab Shahidi</span>
-        </h1>
+        <h1>Dr. Shahab Shahidi</h1>
         <p>
-          Associate Professor of Theoretical Physics & Cosmologist. I focus on unraveling late-time cosmic mysteries, dynamical dark energy, extended theories of gravity, and computational pipelines in theoretical physics.
+          Department of Physics, Damghan University. My core scientific investigations revolve around geometric extensions of gravitation, infrared modifications of gravity, and relativistic cosmological frameworks.
         </p>
-        <div class="hero-actions">
-          <a href="https://inspirehep.net/authors/1066053" target="_blank" class="btn btn-inspire">
-            <i class="fa-solid fa-book-sparkles"></i> Publications on INSPIRE-HEP
+
+        <!-- Contact details -->
+        <div class="contact-grid">
+          <div class="contact-item">
+            <i class="fa-solid fa-envelope"></i>
+            <a href="mailto:s.shahidi@du.ac.ir">s.shahidi@du.ac.ir</a>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <span>+98 23 35320090 ext. 412</span>
+          </div>
+          <div class="contact-item" style="grid-column: 1 / -1;">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Room 196, Aboureyhan Building, Department of Physics, Damghan University, Iran</span>
+          </div>
+        </div>
+
+        <div class="hero-actions" style="margin-top: 16px;">
+          <a href="https://inspirehep.net/authors/1066053" target="_blank" class="btn btn-accent">
+            <i class="fa-solid fa-book-open"></i> INSPIRE-HEP Publications
           </a>
-          <a href="http://faculty.du.ac.ir/shahidi" target="_blank" class="btn btn-gradient">
-            <i class="fa-solid fa-building-columns"></i> Faculty Profile
-          </a>
-          <a href="mailto:s.shahidi@du.ac.ir" class="btn btn-white">
-            <i class="fa-solid fa-envelope"></i> Contact
+          <a href="http://faculty.du.ac.ir/shahidi" target="_blank" class="btn btn-outline">
+            <i class="fa-solid fa-building-columns"></i> Faculty Page
           </a>
         </div>
       </div>
       <div class="hero-avatar-wrapper">
-        <img src="shahab.jpg" alt="Dr. Shahab Shahidi" class="hero-avatar" onerror="this.src='https://avatars.githubusercontent.com/u/shahab-shahidi'">
+        <img src="shahab.jpg" alt="Dr. Shahab Shahidi" class="hero-avatar">
       </div>
     </section>
 
-    <!-- Research Interests (Only 2 Core Fields) -->
-    <section id="interests">
-      <div class="section-header">
-        <h2 class="section-title">
-          <i class="fa-solid fa-sparkles" style="color: var(--primary);"></i> Research Interests
-        </h2>
-        <p class="section-subtitle">The primary theoretical axes guiding my scientific explorations.</p>
-      </div>
-
-      <div class="interests-grid">
-        <!-- Area 1: Cosmology & Dark Energy -->
-        <div class="interest-card">
-          <div class="icon-bubble bubble-cosmo">
-            <i class="fa-solid fa-atom"></i>
-          </div>
-          <h3>Cosmology & Dark Energy</h3>
-          <p>
-            Investigating late-time cosmic acceleration, cosmological perturbation theory, dynamical dark energy scenarios, and addressing the foundational tensions in modern cosmology.
-          </p>
+    <!-- Two Column: Research Interests & Awards -->
+    <div class="grid-2" id="research">
+      <!-- Research Interests -->
+      <div class="card">
+        <div class="section-header" style="margin-top: 0;">
+          <h2 class="section-title"><i class="fa-solid fa-compass-drafting"></i> Research Interests</h2>
         </div>
-
-        <!-- Area 2: Modified Gravity -->
-        <div class="interest-card">
-          <div class="icon-bubble bubble-gravity">
+        <div class="interests-list">
+          <div class="interest-item">
+            <i class="fa-solid fa-arrow-trend-down"></i>
+            <div>
+              <h4>IR Modifications of Gravity</h4>
+              <p>Studying infrared modifications to General Relativity to address large-scale cosmic acceleration and gravitational dynamics.</p>
+            </div>
+          </div>
+          <div class="interest-item">
+            <i class="fa-solid fa-link"></i>
+            <div>
+              <h4>Matter-Geometry Couplings</h4>
+              <p>Investigating non-minimal interactions between matter fields and geometric invariants in gravitational actions.</p>
+            </div>
+          </div>
+          <div class="interest-item">
+            <i class="fa-solid fa-cube"></i>
+            <div>
+              <h4>Weyl Geometry in Gravity</h4>
+              <p>Exploring conformal geometry extensions, non-metricity, and Weyl-invariant formulations of cosmological models.</p>
+            </div>
+          </div>
+          <div class="interest-item">
             <i class="fa-solid fa-globe"></i>
-          </div>
-          <h3>Modified Gravity</h3>
-          <p>
-            Formulating geometric and scalar-tensor extensions to General Relativity, analyzing gauge transformations, and studying their physical manifestations across astrophysical and Gpc scales.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Codes & Course Materials (درس‌نامه‌ها و کدها) -->
-    <section id="resources">
-      <div class="section-header">
-        <h2 class="section-title">
-          <i class="fa-solid fa-laptop-code" style="color: var(--accent);"></i> Codes & Course Materials
-        </h2>
-        <p class="section-subtitle">Numerical physics workflows, computational notebooks, and academic lecture notes.</p>
-      </div>
-
-      <div class="resources-grid">
-        <!-- Python Codes -->
-        <div class="resource-card">
-          <div>
-            <div class="resource-tag tag-python">
-              <i class="fa-brands fa-python"></i> Python & MCMC
+            <div>
+              <h4>Finsler Spaces in Gravity</h4>
+              <p>Utilizing Finslerian geometry and directional-dependent metrics for advanced gravitational and cosmological frameworks.</p>
             </div>
-            <h3>Computational Codes</h3>
-            <p>
-              Open-source algorithms, numerical differential equation solvers, perturbation calculators, and MCMC parameter extraction scripts for cosmological research.
-            </p>
           </div>
-          <a href="https://github.com/shahab-shahidi" target="_blank" class="btn btn-white" style="width: fit-content;">
-            <i class="fa-brands fa-github"></i> GitHub Repositories
-          </a>
-        </div>
-
-        <!-- Lecture Notes -->
-        <div class="resource-card">
-          <div>
-            <div class="resource-tag tag-teaching">
-              <i class="fa-solid fa-chalkboard-user"></i> Teaching & Notes
-            </div>
-            <h3>Lecture Notes & Courses</h3>
-            <p>
-              Curated lecture notes, problem sets, and computational course materials for undergraduate and graduate physics courses at Damghan University.
-            </p>
-          </div>
-          <a href="http://faculty.du.ac.ir/shahidi" target="_blank" class="btn btn-white" style="width: fit-content;">
-            <i class="fa-solid fa-graduation-cap"></i> View Course Notes
-          </a>
         </div>
       </div>
-    </section>
+
+      <!-- Academic Positions & Awards -->
+      <div class="card" id="academic">
+        <div class="section-header" style="margin-top: 0;">
+          <h2 class="section-title"><i class="fa-solid fa-briefcase"></i> Academic Positions</h2>
+        </div>
+        <div class="timeline" style="margin-bottom: 32px;">
+          <div class="timeline-item">
+            <div class="timeline-year">2021 – Present</div>
+            <div class="timeline-title">Associate Professor</div>
+            <div class="timeline-subtitle">Department of Physics, Damghan University</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2012 – 2021</div>
+            <div class="timeline-title">Assistant Professor</div>
+            <div class="timeline-subtitle">Department of Physics, Damghan University</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-award"></i> Honors & Awards</h2>
+        </div>
+        <div class="award-card">
+          <div class="award-icon">
+            <i class="fa-solid fa-medal"></i>
+          </div>
+          <div class="award-info">
+            <h4>Gravity Research Foundation Essay Contest 2014</h4>
+            <p>Received an <strong>Honorable Mention</strong> for the essay contribution (GRF2014).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education History -->
+    <div class="card" style="margin-bottom: 40px;">
+      <div class="section-header" style="margin-top: 0;">
+        <h2 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Education History</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+        <div>
+          <div class="timeline-year">2012</div>
+          <div class="timeline-title">Ph.D. in Gravitation and Cosmology</div>
+          <div class="timeline-subtitle">Shahid Beheshti University</div>
+        </div>
+        <div>
+          <div class="timeline-year">2010</div>
+          <div class="timeline-title">M.Sc. in Gravitation and Cosmology</div>
+          <div class="timeline-subtitle">Shahid Beheshti University</div>
+        </div>
+        <div>
+          <div class="timeline-year">2008</div>
+          <div class="timeline-title">B.Sc. in Physics</div>
+          <div class="timeline-subtitle">Amirkabir University of Technology</div>
+        </div>
+        <div>
+          <div class="timeline-year">2010</div>
+          <div class="timeline-title">B.Sc. in Applied Mathematics</div>
+          <div class="timeline-subtitle">Amirkabir University of Technology</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Codes & Links -->
+    <div class="card" id="resources">
+      <div class="section-header" style="margin-top: 0;">
+        <h2 class="section-title"><i class="fa-solid fa-code"></i> Computational Codes & Resources</h2>
+      </div>
+      <p style="color: var(--text-muted); margin-bottom: 20px;">
+        Access open-source numerical codes, Python algorithms for gravitational perturbations, and academic materials.
+      </p>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <a href="https://github.com/shahab-shahidi" target="_blank" class="btn btn-outline">
+          <i class="fa-brands fa-github"></i> GitHub Repositories
+        </a>
+        <a href="http://faculty.du.ac.ir/shahidi" target="_blank" class="btn btn-outline">
+          <i class="fa-solid fa-book"></i> Faculty Portal & Courses
+        </a>
+      </div>
+    </div>
 
   </div>
 
   <!-- Footer -->
   <footer>
-    <p>&copy; 2026 Dr. Shahab Shahidi. Department of Physics, Damghan University.</p>
+    <p>&copy; 2026 Dr. Shahab Shahidi. Department of Physics, Damghan University. All rights reserved.</p>
   </footer>
 
 </body>
