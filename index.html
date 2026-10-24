@@ -3,26 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dr. Shahab Shahidi | Associate Professor of Theoretical Physics</title>
+  <title>Shahab Shahidi | Theoretical Physics & Cosmology</title>
   <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <style>
     :root {
-      --bg-primary: #0a0f1d;
-      --bg-secondary: #111827;
-      --card-bg: rgba(17, 24, 39, 0.75);
-      --border-color: rgba(55, 65, 81, 0.6);
-      --accent: #d97706; /* Warm Bronze / Gold */
-      --accent-glow: rgba(217, 119, 6, 0.15);
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --text-bright: #ffffff;
-      --primary-blue: #3b82f6;
-      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --primary-blue: #0369a1;      /* Deep Ocean Blue */
+      --primary-navy: #0f172a;      /* Slate Navy */
+      --forest-green: #047857;      /* Academic Emerald Green */
+      --accent-green-light: #ecfdf5;
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --border-subtle: #e2e8f0;
+      --border-accent: #cbd5e1;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 8px 24px -4px rgba(15, 23, 42, 0.07);
     }
 
     * {
@@ -32,546 +33,515 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-primary);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-page);
       color: var(--text-main);
-      line-height: 1.7;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Navbar */
-    nav {
-      background: rgba(10, 15, 29, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-color);
+    /* Top Navigation */
+    header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
       position: sticky;
       top: 0;
       z-index: 1000;
     }
-    .nav-container {
-      max-width: 1150px;
+    .nav-inner {
+      max-width: 1050px;
       margin: 0 auto;
-      padding: 18px 24px;
+      padding: 16px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .brand {
+    .nav-name {
       font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text-bright);
+      font-weight: 800;
+      color: var(--primary-navy);
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
       letter-spacing: -0.01em;
-    }
-    .brand i {
-      color: var(--accent);
     }
     .nav-links {
       display: flex;
-      gap: 22px;
+      gap: 24px;
     }
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-weight: 500;
       font-size: 0.9rem;
-      transition: color 0.2s;
+      font-weight: 500;
+      transition: color 0.2s ease;
     }
     .nav-links a:hover {
-      color: var(--text-bright);
+      color: var(--primary-blue);
     }
 
-    /* Container */
-    .container {
-      max-width: 1150px;
+    /* Main Container */
+    main {
+      max-width: 1050px;
       margin: 0 auto;
-      padding: 48px 24px;
+      padding: 40px 24px 80px 24px;
     }
 
-    /* Hero Section */
-    .hero {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 48px;
-      margin-bottom: 40px;
-      box-shadow: var(--shadow);
+    /* Profile / Intro Card */
+    .profile-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-top: 4px solid var(--primary-blue);
+      border-radius: 12px;
+      padding: 44px;
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 180px 1fr;
       gap: 40px;
-      align-items: center;
+      align-items: flex-start;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 44px;
     }
-    @media (max-width: 850px) {
-      .hero {
+    @media (max-width: 780px) {
+      .profile-card {
         grid-template-columns: 1fr;
-        padding: 32px;
+        padding: 28px;
+        gap: 24px;
         text-align: center;
       }
-      .hero-avatar-wrapper {
+      .profile-photo-box {
         margin: 0 auto;
-        order: -1;
       }
-      .hero-actions {
+      .contact-list {
+        justify-items: center;
+      }
+      .profile-buttons {
         justify-content: center;
       }
-      .hero-badge {
-        margin: 0 auto;
-      }
     }
-    .hero-content {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+
+    .profile-photo-box {
+      width: 170px;
+      height: 170px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-accent);
+      background: #f1f5f9;
+      box-shadow: var(--shadow-sm);
     }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(59, 130, 246, 0.1);
-      color: #60a5fa;
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      width: fit-content;
-    }
-    .hero h1 {
-      font-size: 2.4rem;
-      font-weight: 800;
-      color: var(--text-bright);
-      letter-spacing: -0.02em;
-    }
-    .hero p {
-      font-size: 1.05rem;
-      color: var(--text-muted);
-      line-height: 1.75;
-    }
-    
-    /* Avatar Wrapper */
-    .hero-avatar-wrapper {
-      position: relative;
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      padding: 4px;
-      background: linear-gradient(135deg, var(--accent), var(--primary-blue));
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-      flex-shrink: 0;
-    }
-    .hero-avatar {
+    .profile-photo {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
       object-fit: cover;
-      background: #1f2937;
       display: block;
     }
 
-    /* Contact Details Box */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 12px;
-      margin-top: 10px;
+    .profile-details h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
     }
-    .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.9rem;
+    .profile-role {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--forest-green);
+      margin-bottom: 4px;
+    }
+    .profile-dept {
+      font-size: 0.95rem;
       color: var(--text-muted);
-    }
-    .contact-item i {
-      color: var(--accent);
-      width: 18px;
-    }
-    .contact-item a {
-      color: var(--text-main);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .contact-item a:hover {
-      color: var(--accent);
+      margin-bottom: 22px;
     }
 
-    /* Buttons */
-    .hero-actions {
+    /* Structured Contact Data */
+    .contact-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+    .contact-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .contact-row i {
+      color: var(--primary-blue);
+      font-size: 0.95rem;
+      width: 18px;
+      text-align: center;
+    }
+    .contact-row a {
+      color: var(--primary-blue);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .contact-row a:hover {
+      text-decoration: underline;
+    }
+
+    /* Action Buttons */
+    .profile-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 8px;
+      margin-top: 24px;
     }
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 11px 22px;
-      border-radius: 10px;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: 0.88rem;
       font-weight: 600;
-      font-size: 0.9rem;
       text-decoration: none;
       transition: all 0.2s ease;
     }
-    .btn-accent {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
+    .btn-blue {
+      background: var(--primary-blue);
+      color: #ffffff;
+      border: 1px solid transparent;
     }
-    .btn-accent:hover {
-      background: #b45309;
-      transform: translateY(-1px);
+    .btn-blue:hover {
+      background: #0284c7;
     }
-    .btn-outline {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-color);
-      color: var(--text-bright);
+    .btn-outline-green {
+      background: var(--bg-surface);
+      border: 1px solid var(--forest-green);
+      color: var(--forest-green);
     }
-    .btn-outline:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: #4b5563;
-      transform: translateY(-1px);
+    .btn-outline-green:hover {
+      background: var(--accent-green-light);
     }
 
-    /* Section Header */
-    .section-header {
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px;
+    /* Section Component */
+    .section-wrap {
+      margin-bottom: 44px;
     }
-    .section-title {
-      font-size: 1.4rem;
+    .section-heading {
+      font-size: 1.25rem;
       font-weight: 700;
-      color: var(--text-bright);
+      color: var(--primary-navy);
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border-subtle);
+      margin-bottom: 24px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .section-title i {
-      color: var(--accent);
+    .section-heading span.badge {
+      width: 4px;
+      height: 18px;
+      background: var(--forest-green);
+      border-radius: 2px;
+      display: inline-block;
     }
 
-    /* Two Column Layout for Research & Academic info */
-    .grid-2 {
+    /* Research Interests 2x2 Grid */
+    .interests-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 18px;
+    }
+    .interest-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 22px 24px;
+      transition: all 0.2s ease;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .interest-box:hover {
+      border-color: var(--primary-blue);
+      box-shadow: var(--shadow-sm);
+    }
+    .interest-box i {
+      color: var(--forest-green);
+      font-size: 1.2rem;
+      margin-top: 2px;
+    }
+    .interest-box h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+      margin-bottom: 4px;
+    }
+    .interest-box p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Two Columns: Positions & Education */
+    .dual-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-bottom: 40px;
+      gap: 28px;
     }
-    @media (max-width: 900px) {
-      .grid-2 {
+    @media (max-width: 820px) {
+      .dual-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 32px;
-      box-shadow: var(--shadow);
+    .record-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 28px;
     }
 
-    /* Research Interests List */
-    .interests-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .entry-item {
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid #f1f5f9;
     }
-    .interest-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 16px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      border-radius: 12px;
-      transition: border-color 0.2s;
+    .entry-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
     }
-    .interest-item:hover {
-      border-color: rgba(217, 119, 6, 0.4);
-    }
-    .interest-item i {
-      color: var(--accent);
-      font-size: 1.1rem;
-      margin-top: 3px;
-    }
-    .interest-item h4 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-bright);
-      margin-bottom: 3px;
-    }
-    .interest-item p {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-    }
-
-    /* Timeline / Academic Positions & Education */
-    .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      position: relative;
-    }
-    .timeline-item {
-      position: relative;
-      padding-left: 24px;
-      border-left: 2px solid var(--border-color);
-    }
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -5px;
-      top: 6px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-    .timeline-year {
+    .entry-period {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--accent);
+      font-size: 0.78rem;
       font-weight: 600;
+      color: var(--primary-blue);
       margin-bottom: 2px;
     }
-    .timeline-title {
-      font-size: 1rem;
+    .entry-title {
+      font-size: 0.98rem;
       font-weight: 700;
-      color: var(--text-bright);
+      color: var(--primary-navy);
     }
-    .timeline-subtitle {
+    .entry-institution {
       font-size: 0.88rem;
       color: var(--text-muted);
     }
 
-    /* Awards Box */
-    .award-card {
-      background: rgba(217, 119, 6, 0.05);
-      border: 1px solid rgba(217, 119, 6, 0.2);
-      border-radius: 12px;
-      padding: 20px;
+    /* Award Box */
+    .award-panel {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid var(--forest-green);
+      border-radius: 8px;
+      padding: 22px 24px;
       display: flex;
-      gap: 16px;
+      gap: 18px;
       align-items: center;
-      margin-top: 20px;
     }
-    .award-icon {
-      font-size: 1.8rem;
-      color: var(--accent);
+    .award-icon-box {
+      font-size: 2rem;
+      color: var(--forest-green);
     }
-    .award-info h4 {
-      font-size: 0.95rem;
+    .award-title {
+      font-size: 1rem;
       font-weight: 700;
-      color: var(--text-bright);
+      color: #14532d;
+      margin-bottom: 3px;
     }
-    .award-info p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+    .award-desc {
+      font-size: 0.88rem;
+      color: #166534;
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--border-color);
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      padding: 30px 24px;
       text-align: center;
-      padding: 32px 24px;
       font-size: 0.85rem;
       color: var(--text-muted);
-      background: var(--bg-secondary);
     }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav>
-    <div class="nav-container">
-      <a href="#" class="brand">
-        <i class="fa-solid fa-atom"></i>
-        <span>Dr. Shahab Shahidi</span>
-      </a>
-      <div class="nav-links">
-        <a href="#about">About</a>
+  <!-- Top Bar -->
+  <header>
+    <div class="nav-inner">
+      <a href="#" class="nav-name">Shahab Shahidi</a>
+      <nav class="nav-links">
+        <a href="#about">Overview</a>
         <a href="#research">Research</a>
-        <a href="#academic">Positions & Education</a>
-        <a href="#resources">Codes & Links</a>
-      </div>
+        <a href="#positions">Experience</a>
+        <a href="#education">Education</a>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <div class="container">
-    
-    <!-- Hero Section -->
-    <section class="hero" id="about">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <i class="fa-solid fa-graduation-cap"></i> Associate Professor of Theoretical Physics
-        </div>
-        <h1>Dr. Shahab Shahidi</h1>
-        <p>
-          Department of Physics, Damghan University. My core scientific investigations revolve around geometric extensions of gravitation, infrared modifications of gravity, and relativistic cosmological frameworks.
-        </p>
+  <main>
 
-        <!-- Contact details -->
-        <div class="contact-grid">
-          <div class="contact-item">
-            <i class="fa-solid fa-envelope"></i>
-            <a href="mailto:s.shahidi@du.ac.ir">s.shahidi@du.ac.ir</a>
-          </div>
-          <div class="contact-item">
-            <i class="fa-solid fa-phone"></i>
-            <span>+98 23 35320090 ext. 412</span>
-          </div>
-          <div class="contact-item" style="grid-column: 1 / -1;">
-            <i class="fa-solid fa-location-dot"></i>
-            <span>Room 196, Aboureyhan Building, Department of Physics, Damghan University, Iran</span>
-          </div>
-        </div>
-
-        <div class="hero-actions" style="margin-top: 16px;">
-          <a href="https://inspirehep.net/authors/1066053" target="_blank" class="btn btn-accent">
-            <i class="fa-solid fa-book-open"></i> INSPIRE-HEP Publications
-          </a>
-          <a href="http://faculty.du.ac.ir/shahidi" target="_blank" class="btn btn-outline">
-            <i class="fa-solid fa-building-columns"></i> Faculty Page
-          </a>
-        </div>
+    <!-- Main Profile Card -->
+    <section class="profile-card" id="about">
+      <div class="profile-photo-box">
+        <img src="shahab.jpg" alt="Shahab Shahidi" class="profile-photo" onerror="this.src='https://avatars.githubusercontent.com/u/shahab-shahidi'">
       </div>
-      <div class="hero-avatar-wrapper">
-        <img src="shahab.jpg" alt="Dr. Shahab Shahidi" class="hero-avatar">
+
+      <div class="profile-details">
+        <h1>Shahab Shahidi</h1>
+        <div class="profile-role">Associate Professor of Theoretical Physics</div>
+        <div class="profile-dept">Department of Physics, Damghan University</div>
+
+        <div class="contact-list">
+          <div class="contact-row">
+            <i class="fa-solid fa-envelope"></i>
+            <div>
+              <span style="color: var(--text-muted);">Email: </span>
+              <a href="mailto:s.shahidi@du.ac.ir">s.shahidi@du.ac.ir</a>
+            </div>
+          </div>
+          <div class="contact-row">
+            <i class="fa-solid fa-phone"></i>
+            <div>
+              <span style="color: var(--text-muted);">Phone: </span>
+              <span>+98 23 35320090 ext. 412</span>
+            </div>
+          </div>
+          <div class="contact-row">
+            <i class="fa-solid fa-location-dot"></i>
+            <div>
+              <span style="color: var(--text-muted);">Address: </span>
+              <span>Room 196, Aboureyhan Building, Department of Physics, Damghan University, Damghan, Iran</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-buttons">
+          <a href="https://inspirehep.net/authors/1066053" target="_blank" class="btn btn-blue">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> INSPIRE-HEP Profile
+          </a>
+          <a href="http://faculty.du.ac.ir/shahidi" target="_blank" class="btn btn-outline-green">
+            <i class="fa-solid fa-building-columns"></i> Damghan Faculty Portal
+          </a>
+          <a href="https://github.com/shahab-shahidi" target="_blank" class="btn btn-outline-green">
+            <i class="fa-brands fa-github"></i> GitHub Codes
+          </a>
+        </div>
       </div>
     </section>
 
-    <!-- Two Column: Research Interests & Awards -->
-    <div class="grid-2" id="research">
-      <!-- Research Interests -->
-      <div class="card">
-        <div class="section-header" style="margin-top: 0;">
-          <h2 class="section-title"><i class="fa-solid fa-compass-drafting"></i> Research Interests</h2>
-        </div>
-        <div class="interests-list">
-          <div class="interest-item">
-            <i class="fa-solid fa-arrow-trend-down"></i>
-            <div>
-              <h4>IR Modifications of Gravity</h4>
-              <p>Studying infrared modifications to General Relativity to address large-scale cosmic acceleration and gravitational dynamics.</p>
-            </div>
-          </div>
-          <div class="interest-item">
-            <i class="fa-solid fa-link"></i>
-            <div>
-              <h4>Matter-Geometry Couplings</h4>
-              <p>Investigating non-minimal interactions between matter fields and geometric invariants in gravitational actions.</p>
-            </div>
-          </div>
-          <div class="interest-item">
-            <i class="fa-solid fa-cube"></i>
-            <div>
-              <h4>Weyl Geometry in Gravity</h4>
-              <p>Exploring conformal geometry extensions, non-metricity, and Weyl-invariant formulations of cosmological models.</p>
-            </div>
-          </div>
-          <div class="interest-item">
-            <i class="fa-solid fa-globe"></i>
-            <div>
-              <h4>Finsler Spaces in Gravity</h4>
-              <p>Utilizing Finslerian geometry and directional-dependent metrics for advanced gravitational and cosmological frameworks.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Academic Positions & Awards -->
-      <div class="card" id="academic">
-        <div class="section-header" style="margin-top: 0;">
-          <h2 class="section-title"><i class="fa-solid fa-briefcase"></i> Academic Positions</h2>
-        </div>
-        <div class="timeline" style="margin-bottom: 32px;">
-          <div class="timeline-item">
-            <div class="timeline-year">2021 – Present</div>
-            <div class="timeline-title">Associate Professor</div>
-            <div class="timeline-subtitle">Department of Physics, Damghan University</div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-year">2012 – 2021</div>
-            <div class="timeline-title">Assistant Professor</div>
-            <div class="timeline-subtitle">Department of Physics, Damghan University</div>
+    <!-- Research Interests -->
+    <section class="section-wrap" id="research">
+      <h2 class="section-heading">
+        <span class="badge"></span>
+        Research Interests
+      </h2>
+      <div class="interests-grid">
+        <div class="interest-box">
+          <i class="fa-solid fa-wave-square"></i>
+          <div>
+            <h3>IR modifications of gravity</h3>
+            <p>Infrared extensions and modifications to General Relativity on cosmological and Gpc scales.</p>
           </div>
         </div>
 
-        <div class="section-header">
-          <h2 class="section-title"><i class="fa-solid fa-award"></i> Honors & Awards</h2>
-        </div>
-        <div class="award-card">
-          <div class="award-icon">
-            <i class="fa-solid fa-medal"></i>
-          </div>
-          <div class="award-info">
-            <h4>Gravity Research Foundation Essay Contest 2014</h4>
-            <p>Received an <strong>Honorable Mention</strong> for the essay contribution (GRF2014).</p>
+        <div class="interest-box">
+          <i class="fa-solid fa-circle-nodes"></i>
+          <div>
+            <h3>Matter-Geometry couplings</h3>
+            <p>Non-minimal interactions between matter fields and geometric curvatures in extended gravities.</p>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Education History -->
-    <div class="card" style="margin-bottom: 40px;">
-      <div class="section-header" style="margin-top: 0;">
-        <h2 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Education History</h2>
+        <div class="interest-box">
+          <i class="fa-solid fa-shapes"></i>
+          <div>
+            <h3>Weyl geometry in Gravity</h3>
+            <p>Conformal invariance, non-metricity tensors, and Weyl geometry frameworks in cosmic dynamics.</p>
+          </div>
+        </div>
+
+        <div class="interest-box">
+          <i class="fa-solid fa-compass-drafting"></i>
+          <div>
+            <h3>Finsler Spaces in Gravity</h3>
+            <p>Geometric foundations based on Finslerian manifolds and directional metric structures.</p>
+          </div>
+        </div>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+    </section>
+
+    <!-- Dual Column: Positions & Education -->
+    <section class="section-wrap">
+      <div class="dual-grid">
+        
+        <!-- Academic Positions -->
+        <div class="record-card" id="positions">
+          <h2 class="section-heading" style="margin-bottom: 20px;">
+            <span class="badge"></span>
+            Academic Positions
+          </h2>
+          <div class="entry-item">
+            <div class="entry-period">2021 – Present</div>
+            <div class="entry-title">Associate Professor</div>
+            <div class="entry-institution">Damghan University</div>
+          </div>
+          <div class="entry-item">
+            <div class="entry-period">2012 – 2021</div>
+            <div class="entry-title">Assistant Professor</div>
+            <div class="entry-institution">Damghan University</div>
+          </div>
+        </div>
+
+        <!-- Education History -->
+        <div class="record-card" id="education">
+          <h2 class="section-heading" style="margin-bottom: 20px;">
+            <span class="badge"></span>
+            Education History
+          </h2>
+          <div class="entry-item">
+            <div class="entry-period">2012</div>
+            <div class="entry-title">Ph.D. in Gravitation and Cosmology</div>
+            <div class="entry-institution">Shahid Beheshti University</div>
+          </div>
+          <div class="entry-item">
+            <div class="entry-period">2010</div>
+            <div class="entry-title">M.Sc. in Gravitation and Cosmology</div>
+            <div class="entry-institution">Shahid Beheshti University</div>
+          </div>
+          <div class="entry-item">
+            <div class="entry-period">2008</div>
+            <div class="entry-title">B.Sc. in Physics</div>
+            <div class="entry-institution">Amirkabir University of Technology</div>
+          </div>
+          <div class="entry-item">
+            <div class="entry-period">2010</div>
+            <div class="entry-title">B.Sc. in Applied Mathematics</div>
+            <div class="entry-institution">Amirkabir University of Technology</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Honors & Awards -->
+    <section class="section-wrap">
+      <h2 class="section-heading">
+        <span class="badge"></span>
+        Honors & Awards
+      </h2>
+      <div class="award-panel">
+        <div class="award-icon-box">
+          <i class="fa-solid fa-award"></i>
+        </div>
         <div>
-          <div class="timeline-year">2012</div>
-          <div class="timeline-title">Ph.D. in Gravitation and Cosmology</div>
-          <div class="timeline-subtitle">Shahid Beheshti University</div>
-        </div>
-        <div>
-          <div class="timeline-year">2010</div>
-          <div class="timeline-title">M.Sc. in Gravitation and Cosmology</div>
-          <div class="timeline-subtitle">Shahid Beheshti University</div>
-        </div>
-        <div>
-          <div class="timeline-year">2008</div>
-          <div class="timeline-title">B.Sc. in Physics</div>
-          <div class="timeline-subtitle">Amirkabir University of Technology</div>
-        </div>
-        <div>
-          <div class="timeline-year">2010</div>
-          <div class="timeline-title">B.Sc. in Applied Mathematics</div>
-          <div class="timeline-subtitle">Amirkabir University of Technology</div>
+          <div class="award-title">Gravity Research Foundation Essay Contest (GRF 2014)</div>
+          <div class="award-desc">Received an <strong>Honorable Mention</strong> for the essay contribution.</div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Codes & Links -->
-    <div class="card" id="resources">
-      <div class="section-header" style="margin-top: 0;">
-        <h2 class="section-title"><i class="fa-solid fa-code"></i> Computational Codes & Resources</h2>
-      </div>
-      <p style="color: var(--text-muted); margin-bottom: 20px;">
-        Access open-source numerical codes, Python algorithms for gravitational perturbations, and academic materials.
-      </p>
-      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-        <a href="https://github.com/shahab-shahidi" target="_blank" class="btn btn-outline">
-          <i class="fa-brands fa-github"></i> GitHub Repositories
-        </a>
-        <a href="http://faculty.du.ac.ir/shahidi" target="_blank" class="btn btn-outline">
-          <i class="fa-solid fa-book"></i> Faculty Portal & Courses
-        </a>
-      </div>
-    </div>
-
-  </div>
+  </main>
 
   <!-- Footer -->
   <footer>
-    <p>&copy; 2026 Dr. Shahab Shahidi. Department of Physics, Damghan University. All rights reserved.</p>
+    <p>&copy; 2026 Shahab Shahidi &bull; Department of Physics, Damghan University</p>
   </footer>
 
 </body>
