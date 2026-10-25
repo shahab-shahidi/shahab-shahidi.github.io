@@ -2,11 +2,11 @@ name: Update Papers from arXiv
 
 on:
   schedule:
-    - cron: '0 0 * * *' # اجرای خودکار هر روز ساعت 00:00 به وقت UTC
+    - cron: '0 0 * * *' # اجرای خودکار هر روز
   workflow_dispatch:
 
 permissions:
-  contents: write # مجوز لازم برای کامیت و پوش کردن خودکار فایل papers.json
+  contents: write
 
 jobs:
   update-papers:
@@ -20,49 +20,60 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Fetch latest papers from arXiv and generate papers.json
+      - name: Fetch all papers from arXiv
         run: |
           python3 -c '
           import urllib.request
           import xml.etree.ElementTree as ET
           import json
 
-          url = "http://export.arxiv.org/api/query?search_query=au:Shahab_Shahidi&sortBy=submittedDate&sortOrder=descending&max_results=2"
+          url = "http://export.arxiv.org/api/query?search_query=au:Shahab_Shahidi&sortBy=submittedDate&sortOrder=descending&max_results=100"
           
           try:
               req = urllib.request.urlopen(url)
               xml_data = req.read()
               
               root = ET.fromstring(xml_data)
-              ns = {"atom": "http://www.w3.org/2005/Atom"}
+              ns = {"atom": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
               
-              papers = []
+              all_papers = []
               for entry in root.findall("atom:entry", ns):
                   title = entry.find("atom:title", ns).text.strip().replace("\n", " ")
                   published = entry.find("atom:published", ns).text[:4]
                   id_url = entry.find("atom:id", ns).text.strip()
                   
+                  doi_elem = entry.find("arxiv:doi", ns)
+                  doi = doi_elem.text.strip() if doi_elem is not None else None
+                  
                   authors = [author.find("atom:name", ns).text for author in entry.findall("atom:author", ns)]
                   authors_str = ", ".join(authors)
                   
-                  papers.append({
+                  all_papers.append({
                       "title": title,
                       "authors": authors_str,
                       "journal": "arXiv Preprint",
                       "year": published,
-                      "url": id_url
+                      "url": id_url,
+                      "doi": doi
                   })
               
+              # ۱. ذخیره تمام مقالات برای صفحه publications.html
+              with open("all_papers.json", "w", encoding="utf-8") as f:
+                  json.dump(all_papers, f, ensure_ascii=False, indent=2)
+
+              # ۲. ذخیره دو مقاله آخر برای صفحه index.html
               with open("papers.json", "w", encoding="utf-8") as f:
-                  json.dump(papers, f, ensure_ascii=False, indent=2)
-              print("Successfully updated papers.json with:", len(papers), "papers.")
+                  json.dump(all_papers[:2], f, ensure_ascii=False, indent=2)
+
+              print(f"Successfully updated papers. Total: {len(all_papers)}")
           except Exception as e:
               print("Error fetching from arXiv:", e)
               exit(1)
           '
 
-      - name: Commit and push if papers.json changed
+      - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git diff --quiet papers.json || (git add papers.json && git commit -m "Auto-update latest papers from arXiv (Daily)" && git push)
+          git add papers.json all_papers.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update all papers from arXiv (Daily)" && git push)
