@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Fetch and Parse papers from arXiv
+      - name: Fetch, Parse and Standardize papers
         run: |
           python3 -c '
           import urllib.request
@@ -29,46 +29,78 @@ jobs:
           import re
 
           url = "http://export.arxiv.org/api/query?search_query=au:Shahab_Shahidi&sortBy=submittedDate&sortOrder=descending&max_results=100"
-          
-          def standardize_journal(raw_text):
-              if not raw_text:
+
+          def parse_and_standardize_journal(raw):
+              if not raw:
                   return "arXiv Preprint"
               
-              text = raw_text.strip().replace("\n", " ")
-              lower = text.lower()
+              s = raw.strip().replace("\n", " ")
+              lower = s.lower()
               
-              # تبدیل نام‌های طولانی یا مختلف به اختصار استاندارد یا فرمت زیبا
-              if "dark universe" in lower or "phys. dark univ" in lower:
-                  name = "Phys. Dark Univ."
-              elif "physical review d" in lower or "phys.rev.d" in lower or "prd" in lower:
-                  name = "Phys. Rev. D"
-              elif "european physical journal c" in lower or "eur. phys. j. c" in lower:
-                  name = "Eur. Phys. J. C"
-              elif "journal of cosmology and astroparticle physics" in lower or "jcap" in lower:
-                  name = "JCAP"
-              elif "physics letters b" in lower or "phys. lett. b" in lower:
-                  name = "Phys. Lett. B"
-              elif "classical and quantum gravity" in lower or "class. quantum grav" in lower:
-                  name = "Class. Quantum Grav."
-              elif "astrophysical journal" in lower or "astrophys. j." in lower:
-                  name = "Astrophys. J."
-              else:
-                  # اگر مجله ناشناخته‌ای بود، متن اولیه را تمیز می‌کنیم
-                  return text
+              if "arxiv" in lower or lower == "preprint":
+                  return "arXiv Preprint"
 
-              # تلاش برای استخراج جلد، صفحه و سال از متن ژورنال‌رف
-              # مثال الگو: Phys. Dark Univ. 24 (2019) 100550 یا مشابه
-              return text
+              # تشخیص نام ژورنال
+              jname = ""
+              if "dark univ" in lower:
+                  jname = "PDU"
+              elif "physical review d" in lower or "phys. rev. d" in lower or "phys.rev.d" in lower:
+                  jname = "PRD"
+              elif "european physical journal c" in lower or "eur. phys. j. c" in lower or "epjc" in lower:
+                  jname = "EPJC"
+              elif "european physical journal plus" in lower or "eur. phys. j. plus" in lower or "epjp" in lower:
+                  jname = "EPJP"
+              elif "journal of cosmology and astroparticle physics" in lower or "jcap" in lower:
+                  jname = "JCAP"
+              elif "physics letters b" in lower or "phys. lett. b" in lower:
+                  jname = "PLB"
+              elif "europhysics letters" in lower or "eur. phys. lett" in lower or "epl" in lower:
+                  jname = "EPL"
+              elif "classical and quantum gravity" in lower or "class. quant" in lower:
+                  jname = "CQG"
+              elif "international journal of modern physics d" in lower or "int. j. mod. phys. d" in lower or "ijmpd" in lower:
+                  jname = "IJMPD"
+              elif "annals of physics" in lower:
+                  jname = "Annals Phys."
+              elif "universe" in lower:
+                  jname = "Universe"
+
+              # استخراج سال: (20xx) یا 20xx
+              year_match = re.search(r"\b(19\d\d|20\d\d)\b", s)
+              year = year_match.group(1) if year_match else ""
+
+              # استخراج Volume و Page/ArticleID
+              # تست الگوهایی مثل: Volume 86, Issue 4, id.376
+              m_verbose = re.search(r"Volume\s+(\d+).*?(?:id\.?|page|art\.?\s*no\.?)?\s*([0-9A-Za-z]+)", s, re.IGNORECASE)
+              # تست الگوهایی مثل: 81:742 یا 81, 742 یا 46 (2024) 101720
+              m_compact = re.search(r"\b(\d{1,3})\s*(?:[\(:]\s*(?:19|20)\d\d\s*[\):])?\s*(?:[:,]\s*|\s+)([0-9A-Za-z]+)\b", s)
+
+              vol = ""
+              art = ""
+
+              if m_verbose:
+                  vol = m_verbose.group(1)
+                  art = m_verbose.group(2)
+              elif m_compact:
+                  vol = m_compact.group(1)
+                  art = m_compact.group(2)
+
+              if jname and vol and art:
+                  if year:
+                      return f"{jname} {vol} ({year}) {art}"
+                  return f"{jname} {vol}, {art}"
+              elif jname and vol:
+                  return f"{jname} {vol} ({year})" if year else f"{jname} {vol}"
+              
+              # اگر قابل استخراج نبود، تمیزکاری پایه‌ای متن
+              cleaned = re.sub(r"\s+", " ", s).strip()
+              return cleaned
 
           try:
               req = urllib.request.urlopen(url)
               xml_data = req.read()
-              
               root = ET.fromstring(xml_data)
-              ns = {
-                  "atom": "http://www.w3.org/2005/Atom",
-                  "arxiv": "http://arxiv.org/schemas/atom"
-              }
+              ns = {"atom": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
               
               all_papers = []
               for entry in root.findall("atom:entry", ns):
@@ -84,7 +116,6 @@ jobs:
                   doi_elem = entry.find("arxiv:doi", ns)
                   doi = doi_elem.text.strip() if doi_elem is not None else None
                   
-                  # بررسی journal_ref یا comment
                   journal_raw = None
                   jref_elem = entry.find("arxiv:journal_ref", ns)
                   if jref_elem is not None and jref_elem.text:
@@ -98,7 +129,7 @@ jobs:
                                   journal_raw = c_text
                                   break
                   
-                  journal = standardize_journal(journal_raw)
+                  journal = parse_and_standardize_journal(journal_raw)
                   
                   authors = [author.find("atom:name", ns).text for author in entry.findall("atom:author", ns) if author.find("atom:name", ns) is not None]
                   authors_str = ", ".join(authors)
@@ -118,7 +149,7 @@ jobs:
               with open("papers.json", "w", encoding="utf-8") as f:
                   json.dump(all_papers[:2], f, ensure_ascii=False, indent=2)
 
-              print(f"Successfully generated {len(all_papers)} papers.")
+              print(f"Successfully processed {len(all_papers)} papers with standardized journal style.")
           except Exception as e:
               print("Error:", e)
               exit(1)
@@ -129,4 +160,4 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add all_papers.json papers.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Standardize journal references" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Standardize journal citation style" && git push)
