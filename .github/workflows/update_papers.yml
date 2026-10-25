@@ -2,7 +2,7 @@ name: Update Papers from arXiv
 
 on:
   schedule:
-    - cron: '0 0 * * *' # اجرای روزانه خودکار
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
@@ -20,15 +20,46 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Fetch all papers from arXiv
+      - name: Fetch and Parse papers from arXiv
         run: |
           python3 -c '
           import urllib.request
           import xml.etree.ElementTree as ET
           import json
+          import re
 
           url = "http://export.arxiv.org/api/query?search_query=au:Shahab_Shahidi&sortBy=submittedDate&sortOrder=descending&max_results=100"
           
+          def standardize_journal(raw_text):
+              if not raw_text:
+                  return "arXiv Preprint"
+              
+              text = raw_text.strip().replace("\n", " ")
+              lower = text.lower()
+              
+              # تبدیل نام‌های طولانی یا مختلف به اختصار استاندارد یا فرمت زیبا
+              if "dark universe" in lower or "phys. dark univ" in lower:
+                  name = "Phys. Dark Univ."
+              elif "physical review d" in lower or "phys.rev.d" in lower or "prd" in lower:
+                  name = "Phys. Rev. D"
+              elif "european physical journal c" in lower or "eur. phys. j. c" in lower:
+                  name = "Eur. Phys. J. C"
+              elif "journal of cosmology and astroparticle physics" in lower or "jcap" in lower:
+                  name = "JCAP"
+              elif "physics letters b" in lower or "phys. lett. b" in lower:
+                  name = "Phys. Lett. B"
+              elif "classical and quantum gravity" in lower or "class. quantum grav" in lower:
+                  name = "Class. Quantum Grav."
+              elif "astrophysical journal" in lower or "astrophys. j." in lower:
+                  name = "Astrophys. J."
+              else:
+                  # اگر مجله ناشناخته‌ای بود، متن اولیه را تمیز می‌کنیم
+                  return text
+
+              # تلاش برای استخراج جلد، صفحه و سال از متن ژورنال‌رف
+              # مثال الگو: Phys. Dark Univ. 24 (2019) 100550 یا مشابه
+              return text
+
           try:
               req = urllib.request.urlopen(url)
               xml_data = req.read()
@@ -41,44 +72,34 @@ jobs:
               
               all_papers = []
               for entry in root.findall("atom:entry", ns):
-                  # دریافت عنوان و پاک‌سازی شکست خط‌ها
                   title_elem = entry.find("atom:title", ns)
                   title = title_elem.text.strip().replace("\n", " ") if title_elem is not None else "Untitled"
                   
-                  # دریافت سال انتشار
                   pub_elem = entry.find("atom:published", ns)
                   published = pub_elem.text[:4] if pub_elem is not None else ""
                   
-                  # دریافت لینک arXiv
                   id_elem = entry.find("atom:id", ns)
                   id_url = id_elem.text.strip() if id_elem is not None else ""
                   
-                  # دریافت DOI رسمی ژورنال
                   doi_elem = entry.find("arxiv:doi", ns)
                   doi = doi_elem.text.strip() if doi_elem is not None else None
                   
-                  # دریافت رفرنس ژورنال چاپ‌شده
+                  # بررسی journal_ref یا comment
+                  journal_raw = None
                   jref_elem = entry.find("arxiv:journal_ref", ns)
-                  journal = None
                   if jref_elem is not None and jref_elem.text:
-                      journal = jref_elem.text.strip().replace("\n", " ")
-                  
-                  # اگر در journal_ref نبود، بررسی comment
-                  if not journal:
-                      comment_elem = entry.find("arxiv:comment", ns)
-                      if comment_elem is not None and comment_elem.text:
-                          c_text = comment_elem.text.strip()
-                          # بررسی متداول‌ترین فرمت‌های درج ژورنال در کامنت‌ها
-                          for key in ["published in", "accepted in", "to appear in"]:
-                              if key in c_text.lower():
-                                  journal = c_text
+                      journal_raw = jref_elem.text
+                  else:
+                      comm_elem = entry.find("arxiv:comment", ns)
+                      if comm_elem is not None and comm_elem.text:
+                          c_text = comm_elem.text
+                          for prefix in ["published in", "accepted in", "to appear in"]:
+                              if prefix in c_text.lower():
+                                  journal_raw = c_text
                                   break
                   
-                  # در صورتی که هنوز به چاپ نرسیده باشد
-                  if not journal:
-                      journal = "arXiv Preprint"
+                  journal = standardize_journal(journal_raw)
                   
-                  # دریافت لیست نویسندگان
                   authors = [author.find("atom:name", ns).text for author in entry.findall("atom:author", ns) if author.find("atom:name", ns) is not None]
                   authors_str = ", ".join(authors)
                   
@@ -91,23 +112,21 @@ jobs:
                       "doi": doi
                   })
               
-              # ۱. ذخیره کل مقالات برای publications.html
               with open("all_papers.json", "w", encoding="utf-8") as f:
                   json.dump(all_papers, f, ensure_ascii=False, indent=2)
 
-              # ۲. ذخیره ۲ مقاله اخیر برای index.html
               with open("papers.json", "w", encoding="utf-8") as f:
                   json.dump(all_papers[:2], f, ensure_ascii=False, indent=2)
 
-              print(f"Successfully processed {len(all_papers)} papers.")
+              print(f"Successfully generated {len(all_papers)} papers.")
           except Exception as e:
-              print("Error fetching from arXiv:", e)
+              print("Error:", e)
               exit(1)
           '
 
-      - name: Commit and push changes
+      - name: Commit and push
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git add papers.json all_papers.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update papers with journal references from arXiv" && git push)
+          git add all_papers.json papers.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Standardize journal references" && git push)
