@@ -2,7 +2,7 @@ name: Update Papers from arXiv
 
 on:
   schedule:
-    - cron: '0 0 * * *' # اجرای خودکار هر روز
+    - cron: '0 0 * * *' # اجرای روزانه خودکار
   workflow_dispatch:
 
 permissions:
@@ -34,38 +34,72 @@ jobs:
               xml_data = req.read()
               
               root = ET.fromstring(xml_data)
-              ns = {"atom": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
+              ns = {
+                  "atom": "http://www.w3.org/2005/Atom",
+                  "arxiv": "http://arxiv.org/schemas/atom"
+              }
               
               all_papers = []
               for entry in root.findall("atom:entry", ns):
-                  title = entry.find("atom:title", ns).text.strip().replace("\n", " ")
-                  published = entry.find("atom:published", ns).text[:4]
-                  id_url = entry.find("atom:id", ns).text.strip()
+                  # دریافت عنوان و پاک‌سازی شکست خط‌ها
+                  title_elem = entry.find("atom:title", ns)
+                  title = title_elem.text.strip().replace("\n", " ") if title_elem is not None else "Untitled"
                   
+                  # دریافت سال انتشار
+                  pub_elem = entry.find("atom:published", ns)
+                  published = pub_elem.text[:4] if pub_elem is not None else ""
+                  
+                  # دریافت لینک arXiv
+                  id_elem = entry.find("atom:id", ns)
+                  id_url = id_elem.text.strip() if id_elem is not None else ""
+                  
+                  # دریافت DOI رسمی ژورنال
                   doi_elem = entry.find("arxiv:doi", ns)
                   doi = doi_elem.text.strip() if doi_elem is not None else None
                   
-                  authors = [author.find("atom:name", ns).text for author in entry.findall("atom:author", ns)]
+                  # دریافت رفرنس ژورنال چاپ‌شده
+                  jref_elem = entry.find("arxiv:journal_ref", ns)
+                  journal = None
+                  if jref_elem is not None and jref_elem.text:
+                      journal = jref_elem.text.strip().replace("\n", " ")
+                  
+                  # اگر در journal_ref نبود، بررسی comment
+                  if not journal:
+                      comment_elem = entry.find("arxiv:comment", ns)
+                      if comment_elem is not None and comment_elem.text:
+                          c_text = comment_elem.text.strip()
+                          # بررسی متداول‌ترین فرمت‌های درج ژورنال در کامنت‌ها
+                          for key in ["published in", "accepted in", "to appear in"]:
+                              if key in c_text.lower():
+                                  journal = c_text
+                                  break
+                  
+                  # در صورتی که هنوز به چاپ نرسیده باشد
+                  if not journal:
+                      journal = "arXiv Preprint"
+                  
+                  # دریافت لیست نویسندگان
+                  authors = [author.find("atom:name", ns).text for author in entry.findall("atom:author", ns) if author.find("atom:name", ns) is not None]
                   authors_str = ", ".join(authors)
                   
                   all_papers.append({
                       "title": title,
                       "authors": authors_str,
-                      "journal": "arXiv Preprint",
+                      "journal": journal,
                       "year": published,
                       "url": id_url,
                       "doi": doi
                   })
               
-              # ۱. ذخیره تمام مقالات برای صفحه publications.html
+              # ۱. ذخیره کل مقالات برای publications.html
               with open("all_papers.json", "w", encoding="utf-8") as f:
                   json.dump(all_papers, f, ensure_ascii=False, indent=2)
 
-              # ۲. ذخیره دو مقاله آخر برای صفحه index.html
+              # ۲. ذخیره ۲ مقاله اخیر برای index.html
               with open("papers.json", "w", encoding="utf-8") as f:
                   json.dump(all_papers[:2], f, ensure_ascii=False, indent=2)
 
-              print(f"Successfully updated papers. Total: {len(all_papers)}")
+              print(f"Successfully processed {len(all_papers)} papers.")
           except Exception as e:
               print("Error fetching from arXiv:", e)
               exit(1)
@@ -76,4 +110,4 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add papers.json all_papers.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update all papers from arXiv (Daily)" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update papers with journal references from arXiv" && git push)
