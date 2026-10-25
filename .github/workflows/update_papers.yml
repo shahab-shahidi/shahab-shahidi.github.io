@@ -2,17 +2,18 @@ name: Update Papers from arXiv
 
 on:
   schedule:
+    # Run everyday at 00:00 UTC
     - cron: '0 0 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual trigger from Actions tab
 
 permissions:
   contents: write
 
 jobs:
-  update-papers:
+  fetch-arxiv:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Check out repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -20,144 +21,191 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Fetch, Parse and Standardize papers
+      - name: Install dependencies
         run: |
-          python3 -c '
+          pip install requests
+
+      - name: Fetch arXiv Papers & Normalize Citations
+        run: |
+          python - << 'EOF'
           import urllib.request
           import xml.etree.ElementTree as ET
           import json
           import re
 
+          def clean_author_name(name):
+              parts = [p.strip() for p in name.split(',') if p.strip()]
+              if len(parts) == 2:
+                  return f"{parts[1]} {parts[0]}"
+              return name.strip()
+
+          def normalize_journal(ref_str, default_year=""):
+              if not ref_str:
+                  return "arXiv Preprint"
+              
+              clean_ref = re.sub(r'[\r\n\t]+', ' ', ref_str).strip()
+              clean_ref = re.sub(r'\s+', ' ', clean_ref)
+
+              # Dictionary mapping variations/keywords to canonical abbreviations
+              journal_map = [
+                  (r'phys(ical)?\.?\s*rev(iew)?\.?\s*d', 'PRD'),
+                  (r'phys(ical)?\.?\s*rev(iew)?\.?\s*lett(ers)?', 'PRL'),
+                  (r'phys(ical)?\.?\s*rev(iew)?\.?\s*b', 'PRB'),
+                  (r'phys(ical)?\.?\s*rev(iew)?\.?\s*c', 'PRC'),
+                  (r'phys(ical)?\.?\s*rev(iew)?\.?\s*x', 'PRX'),
+                  (r'phys(ical)?\.?\s*rev(iew)?\.?\s*research', 'PRResearch'),
+                  (r'(the\s+)?eur(opean)?\.?\s*phys(ical)?\.?\s*j(ournal)?\.?\s*c', 'EPJC'),
+                  (r'dark\s*universe|phys(ics)?\.?\s*dark\s*univ(erse)?', 'PDU'),
+                  (r'j(ournal\s+of\s+)?c(osmology\s+and\s+)?a(stroparticle\s+)?p(hysics)?', 'JCAP'),
+                  (r'j(ournal\s+of\s+)?h(igh\s+)?e(nergy\s+)?a(strophysics)?', 'JHEAP'),
+                  (r'j(ournal\s+of\s+)?h(igh\s+)?e(nergy\s+)?p(hysics)?', 'JHEP'),
+                  (r'mon(thly)?\.?\s*not(ices)?\.?\s*(roy(al)?\.?\s*astron(omical)?\.?\s*soc(iety)?)?|mnras', 'MNRAS'),
+                  (r'astrophys(ical)?\.?\s*j(ournal)?\.?\s*suppl(ement)?', 'ApJS'),
+                  (r'astrophys(ical)?\.?\s*j(ournal)?\.?\s*lett(ers)?', 'ApJL'),
+                  (r'astrophys(ical)?\.?\s*j(ournal)?', 'ApJ'),
+                  (r'gen(eral)?\.?\s*rel(ativity)?\.?\s*(and\s+)?grav(itation)?', 'GRG'),
+                  (r'class(ical)?\.?\s*(and\s+)?quant(um)?\.?\s*grav(ity)?', 'CQG'),
+                  (r'ann(als)?\.?\s*phys(ics)?', 'Annals Phys.'),
+                  (r'nuclear\s+phys(ics)?\.?\s*b|nucl\.?\s*phys\.?\s*b', 'Nucl. Phys. B'),
+                  (r'phys(ics)?\.?\s*lett(ers)?\.?\s*b', 'PLB'),
+                  (r'universe', 'Universe'),
+                  (r'astron(omy)?\.?\s*(&|and)\s*astrophys(ics)?', 'A&A'),
+                  (r'front(iers)?\.?\s*in\s*phys(ics)?', 'Front. Phys.'),
+                  (r'fortschr(itte)?\.?\s*phys(ik)?', 'Fortsch. Phys.'),
+                  (r'symmetry', 'Symmetry'),
+                  (r'entropy', 'Entropy'),
+              ]
+
+              identified_j = None
+              matched_pattern = ""
+              for pattern, abbrev in journal_map:
+                  m = re.search(r'\b' + pattern + r'\b', clean_ref, re.IGNORECASE)
+                  if m:
+                      identified_j = abbrev
+                      matched_pattern = m.group(0)
+                      break
+
+              if not identified_j:
+                  # If no major journal matched, clean up trailing junk
+                  fallback = re.sub(r'^(published\s+in:?|to\s+appear\s+in:?|accepted\s+by:?)\s*', '', clean_ref, flags=re.IGNORECASE)
+                  return fallback if len(fallback) > 3 else "arXiv Preprint"
+
+              # Isolate the citation specs following or surrounding the journal name
+              specs = clean_ref.replace(matched_pattern, ' ')
+
+              # Format A: Multidisciplinary/MDPI style: e.g. "Universe 2025, 11(7), 198" or "2025, 11, 198"
+              # Match Year, Volume, optional issue, and page/article ID
+              p_mdpi = re.search(r'(?:^|[,\s])(?P<year>(?:19|20)\d{2})[,\s]+(?P<vol>\d+)(?:\((?P<issue>\w+)\))?[,\s]+(?P<page>[a-zA-Z0-9_\.\-]+)', specs)
+              if p_mdpi:
+                  v = p_mdpi.group('vol')
+                  y = p_mdpi.group('year')
+                  p = p_mdpi.group('page')
+                  return f"{identified_j} {v} ({y}) {p}"
+
+              # Format B: Traditional HEP citation style: e.g. "EPJC 81 (2021) 274" or "PRD 107, 064008 (2023)"
+              p_hep1 = re.search(r'(?:vol(?:ume|\.)?\s*)?(?P<vol>\d+)[,\s]*(?:\((?:no\.\s*)?\w+\))?[,\s]*\((?P<year>(?:19|20)\d{2})\)[,\s]*(?:id\.?\s*|no\.?\s*)?(?P<page>[a-zA-Z0-9_\.\-]+)', specs, re.IGNORECASE)
+              if p_hep1:
+                  v = p_hep1.group('vol')
+                  y = p_hep1.group('year')
+                  p = p_hep1.group('page')
+                  return f"{identified_j} {v} ({y}) {p}"
+
+              # Format C: Volume, page, (year): e.g. "PRD 98, 084025 (2018)"
+              p_hep2 = re.search(r'(?:vol(?:ume|\.)?\s*)?(?P<vol>\d+)[,\s]*(?:id\.?\s*|no\.?\s*)?(?P<page>[a-zA-Z0-9_\.\-]+)[,\s]*\((?P<year>(?:19|20)\d{2})\)', specs, re.IGNORECASE)
+              if p_hep2:
+                  v = p_hep2.group('vol')
+                  y = p_hep2.group('year')
+                  p = p_hep2.group('page')
+                  return f"{identified_j} {v} ({y}) {p}"
+
+              # Format D: Generic extraction of numbers if strict structure varied
+              vol_m = re.search(r'(?:vol(?:ume|\.)?\s*)(\d+)', specs, re.IGNORECASE)
+              year_m = re.search(r'\b((?:19|20)\d{2})\b', specs)
+              page_m = re.search(r'(?:id\.?\s*|page\s*|art(icle)?\.?\s*|no\.?\s*)([a-zA-Z0-9_\.\-]+)', specs, re.IGNORECASE)
+
+              year = year_m.group(1) if year_m else default_year
+              vol = vol_m.group(1) if vol_m else ""
+              page = page_m.group(2) if page_m else ""
+
+              if vol and page:
+                  return f"{identified_j} {vol} ({year}) {page}" if year else f"{identified_j} {vol} {page}"
+              elif vol:
+                  return f"{identified_j} {vol} ({year})" if year else f"{identified_j} {vol}"
+
+              return identified_j
+
+          # arXiv API Query
           url = "http://export.arxiv.org/api/query?search_query=au:Shahab_Shahidi&sortBy=submittedDate&sortOrder=descending&max_results=100"
+          req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Academic CV updater)'})
+          response = urllib.request.urlopen(req)
+          xml_data = response.read()
 
-          def parse_and_standardize_journal(raw):
-              if not raw:
-                  return "arXiv Preprint"
-              
-              s = raw.strip().replace("\n", " ")
-              lower = s.lower()
-              
-              if "arxiv" in lower or lower == "preprint":
-                  return "arXiv Preprint"
+          root = ET.fromstring(xml_data)
+          ns = {
+              'atom': 'http://www.w3.org/2005/Atom',
+              'arxiv': 'http://arxiv.org/xmlns/arxiv'
+          }
 
-              # تشخیص نام ژورنال
-              jname = ""
-              if "dark univ" in lower:
-                  jname = "PDU"
-              elif "physical review d" in lower or "phys. rev. d" in lower or "phys.rev.d" in lower:
-                  jname = "PRD"
-              elif "european physical journal c" in lower or "eur. phys. j. c" in lower or "epjc" in lower:
-                  jname = "EPJC"
-              elif "european physical journal plus" in lower or "eur. phys. j. plus" in lower or "epjp" in lower:
-                  jname = "EPJP"
-              elif "journal of cosmology and astroparticle physics" in lower or "jcap" in lower:
-                  jname = "JCAP"
-              elif "physics letters b" in lower or "phys. lett. b" in lower:
-                  jname = "PLB"
-              elif "europhysics letters" in lower or "eur. phys. lett" in lower or "epl" in lower:
-                  jname = "EPL"
-              elif "classical and quantum gravity" in lower or "class. quant" in lower:
-                  jname = "CQG"
-              elif "international journal of modern physics d" in lower or "int. j. mod. phys. d" in lower or "ijmpd" in lower:
-                  jname = "IJMPD"
-              elif "annals of physics" in lower:
-                  jname = "Annals Phys."
-              elif "universe" in lower:
-                  jname = "Universe"
+          entries = root.findall('atom:entry', ns)
+          papers = []
 
-              # استخراج سال: (20xx) یا 20xx
-              year_match = re.search(r"\b(19\d\d|20\d\d)\b", s)
-              year = year_match.group(1) if year_match else ""
+          for entry in entries:
+              title = entry.find('atom:title', ns).text
+              title = re.sub(r'\s+', ' ', title).strip()
 
-              # استخراج Volume و Page/ArticleID
-              # تست الگوهایی مثل: Volume 86, Issue 4, id.376
-              m_verbose = re.search(r"Volume\s+(\d+).*?(?:id\.?|page|art\.?\s*no\.?)?\s*([0-9A-Za-z]+)", s, re.IGNORECASE)
-              # تست الگوهایی مثل: 81:742 یا 81, 742 یا 46 (2024) 101720
-              m_compact = re.search(r"\b(\d{1,3})\s*(?:[\(:]\s*(?:19|20)\d\d\s*[\):])?\s*(?:[:,]\s*|\s+)([0-9A-Za-z]+)\b", s)
+              authors = [clean_author_name(author.find('atom:name', ns).text) for author in entry.findall('atom:author', ns)]
+              authors_str = ", ".join(authors)
 
-              vol = ""
-              art = ""
+              published = entry.find('atom:published', ns).text
+              year = published.split('-')[0] if published else ""
 
-              if m_verbose:
-                  vol = m_verbose.group(1)
-                  art = m_verbose.group(2)
-              elif m_compact:
-                  vol = m_compact.group(1)
-                  art = m_compact.group(2)
+              link_node = entry.find("atom:link[@rel='alternate']", ns)
+              url_link = link_node.attrib['href'] if link_node is not None else ""
 
-              if jname and vol and art:
-                  if year:
-                      return f"{jname} {vol} ({year}) {art}"
-                  return f"{jname} {vol}, {art}"
-              elif jname and vol:
-                  return f"{jname} {vol} ({year})" if year else f"{jname} {vol}"
-              
-              # اگر قابل استخراج نبود، تمیزکاری پایه‌ای متن
-              cleaned = re.sub(r"\s+", " ", s).strip()
-              return cleaned
+              doi_node = entry.find('arxiv:doi', ns)
+              doi = doi_node.text.strip() if doi_node is not None else None
 
-          try:
-              req = urllib.request.urlopen(url)
-              xml_data = req.read()
-              root = ET.fromstring(xml_data)
-              ns = {"atom": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
-              
-              all_papers = []
-              for entry in root.findall("atom:entry", ns):
-                  title_elem = entry.find("atom:title", ns)
-                  title = title_elem.text.strip().replace("\n", " ") if title_elem is not None else "Untitled"
-                  
-                  pub_elem = entry.find("atom:published", ns)
-                  published = pub_elem.text[:4] if pub_elem is not None else ""
-                  
-                  id_elem = entry.find("atom:id", ns)
-                  id_url = id_elem.text.strip() if id_elem is not None else ""
-                  
-                  doi_elem = entry.find("arxiv:doi", ns)
-                  doi = doi_elem.text.strip() if doi_elem is not None else None
-                  
-                  journal_raw = None
-                  jref_elem = entry.find("arxiv:journal_ref", ns)
-                  if jref_elem is not None and jref_elem.text:
-                      journal_raw = jref_elem.text
-                  else:
-                      comm_elem = entry.find("arxiv:comment", ns)
-                      if comm_elem is not None and comm_elem.text:
-                          c_text = comm_elem.text
-                          for prefix in ["published in", "accepted in", "to appear in"]:
-                              if prefix in c_text.lower():
-                                  journal_raw = c_text
-                                  break
-                  
-                  journal = parse_and_standardize_journal(journal_raw)
-                  
-                  authors = [author.find("atom:name", ns).text for author in entry.findall("atom:author", ns) if author.find("atom:name", ns) is not None]
-                  authors_str = ", ".join(authors)
-                  
-                  all_papers.append({
-                      "title": title,
-                      "authors": authors_str,
-                      "journal": journal,
-                      "year": published,
-                      "url": id_url,
-                      "doi": doi
-                  })
-              
-              with open("all_papers.json", "w", encoding="utf-8") as f:
-                  json.dump(all_papers, f, ensure_ascii=False, indent=2)
+              journal_node = entry.find('arxiv:journal_ref', ns)
+              comment_node = entry.find('arxiv:comment', ns)
 
-              with open("papers.json", "w", encoding="utf-8") as f:
-                  json.dump(all_papers[:2], f, ensure_ascii=False, indent=2)
+              ref_source = ""
+              if journal_node is not None and journal_node.text:
+                  ref_source = journal_node.text
+              elif comment_node is not None and comment_node.text:
+                  # Check if comment contains publication hint
+                  if re.search(r'(published|accepted|appear|phys|jcap|jhep|jheap|mnras|universe|prd|epjc|cqg)', comment_node.text, re.IGNORECASE):
+                      ref_source = comment_node.text
 
-              print(f"Successfully processed {len(all_papers)} papers with standardized journal style.")
-          except Exception as e:
-              print("Error:", e)
-              exit(1)
-          '
+              journal_clean = normalize_journal(ref_source, default_year=year)
 
-      - name: Commit and push
+              papers.append({
+                  "title": title,
+                  "authors": authors_str,
+                  "journal": journal_clean,
+                  "year": year,
+                  "url": url_link,
+                  "doi": f"https://doi.org/{doi}" if doi else None
+              })
+
+          # 1. Save all papers for publications.html
+          with open('all_papers.json', 'w', encoding='utf-8') as f:
+              json.dump(papers, f, ensure_ascii=False, indent=2)
+
+          # 2. Save latest 2 papers for index.html hero section
+          with open('papers.json', 'w', encoding='utf-8') as f:
+              json.dump(papers[:2], f, ensure_ascii=False, indent=2)
+
+          print(f"Successfully processed {len(papers)} papers.")
+          EOF
+
+      - name: Commit and push changes
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-          git add all_papers.json papers.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Standardize journal citation style" && git push)
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add papers.json all_papers.json
+          if git diff-index --quiet HEAD --; then
+            echo "No changes in papers to commit."
+          else
+            git commit -m "Auto-update publications: standardized journal citations [skip ci]"
+            git push
+          fi
